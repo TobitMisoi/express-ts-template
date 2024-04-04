@@ -1,8 +1,15 @@
 import express from "express";
 import { engine } from "express-handlebars";
+import { CommonRoutesConfig } from "./common/common.routes.config";
+import { UserRoutes } from "./routes/users/user.routes.config";
+import { AuthRoutes } from "./auth/auth.routes.config";
 
 const app = express();
 const port = 3000;
+
+const routes: Array<CommonRoutesConfig> = [];
+
+app.use(express.json());
 
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
@@ -15,7 +22,13 @@ app.get("/", (req, res) => {
   });
 });
 
+routes.push(new UserRoutes(app));
+routes.push(new AuthRoutes(app));
+
 
 app.listen(port, () => {
+  routes.forEach((route: CommonRoutesConfig) => {
+    console.log(`Routes configured for ${route.getName()}`);
+  })
   console.log(`Server is running on port ${port}`);
 });
