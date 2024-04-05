@@ -14,9 +14,11 @@
   "author": "tobitmisoi",
   "license": "ISC",
   "dependencies": {
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/node": "^20.11.30",
     "argon2": "^0.40.1",
+    "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "express": "^4.19.2",
     "express-handlebars": "^7.1.2",
