@@ -2,6 +2,7 @@ import argon2 from "argon2";
 import express from "express";
 import mysql from "mysql";
 import { v4 } from "uuid";
+import { CreateUserDto } from "../dto/create.user.dto";
 
 const pool = mysql.createPool({
   host: "localhost",
@@ -19,23 +20,30 @@ class UsersController {
 
       // Insert the user into the database
       const insertQuery = "INSERT INTO users SET ?";
-      const insertParams = req.body;
+      const { firstName, lastName, email, identifier, password, identifierType, permission }: CreateUserDto = req.body;
       const userId = v4();
 
-      pool.query(
-        insertQuery,
-        { ...insertParams, public_id: userId },
-        (error: any, results: { insertId: any }) => {
-          if (error) {
-            console.error("Error creating user:", error);
-            res.status(500).send("Error creating user");
-            return;
-          }
+      const queryParams = {
+        public_id: userId,
+        firstName,
+        lastName,
+        email,
+        identifier,
+        password,
+        identifierType,
+        permission,
+      };
 
-          const userId = results.insertId;
-          res.status(201).send({ message: "User created", userId: userId });
+      pool.query(insertQuery, queryParams, (err, result) => {
+        if (err) {
+          console.log(err)
+          res.status(500).json({ error: "Error creating user" });
+          return;
         }
-      );
+
+        const createdUserId = result.insertId;
+        res.status(201).json({ message: "User created", userId: createdUserId });
+      });
     } catch (error) {
       console.error("Error hashing password:", error);
       res.status(500).send("Error hashing password");

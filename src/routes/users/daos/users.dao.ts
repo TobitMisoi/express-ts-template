@@ -41,7 +41,7 @@ class UsersDao {
         userFields.password,
         userFields.firstName,
         userFields.lastName,
-        userFields.permissionFlags || PermissionFlag.FREE_PERMISSION,
+        userFields.permission || PermissionFlag.FREE_PERMISSION,
       ]
     );
 

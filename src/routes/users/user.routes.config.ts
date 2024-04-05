@@ -19,16 +19,31 @@ export class UserRoutes extends CommonRoutesConfig {
     //   res.status(200).send(`Post to users`);
     // })
 
-    const { verifyBodyFieldsErrors } = bodyValidationMiddleware;
+    const { verifyBodyFieldsErrors, validateSameEmailDoesntExist } = bodyValidationMiddleware;
     const { createUser, listUsers, editUser } = usersController;
     const {validJWTNeeded} = jwtMiddleware
 
     this.app
       .route(`/users`)
-      .get(validJWTNeeded,listUsers)
+      .get(validJWTNeeded, listUsers)
       .post(
-        [body("email").isEmail(), body("password").isLength({ min: 5 })],
+        [
+          body("email").isEmail().bail(),
+          body("password")
+            .isLength({ min: 5 })
+            .withMessage('Password must be at least 5 characters long')
+            .isString()
+            .withMessage('Password must be a string')
+            .notEmpty()
+            .withMessage('Password cannot be empty')
+            .bail(), // stop validation if this fails
+          body("firstName").isLength({ min: 2, max: 50 }),
+          body("lastName").isLength({ min: 2, max: 50 }),
+          body("identifier"),
+          body("identifierType").isIn(["PASSPORT", "NATIONAL_ID"]),
+        ],
         verifyBodyFieldsErrors,
+        validateSameEmailDoesntExist,
         createUser
       );
 
