@@ -36,6 +36,44 @@ class AuthController {
     }
   }
 
+  // retrieve user with jwt
+  async getUserWithJWT(
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) {
+    try {
+      const authorization = req?.headers?.["authorization"]?.split(" ");
+      if (authorization?.[0] !== "Bearer") {
+        return res.status(401).send();
+      }
+      const userId = jwt.verify(authorization[1], "bridj") as { userId: string };
+      pool.query(
+        "SELECT * FROM users WHERE public_id = ?",
+        [userId?.userId],
+        (error: any, results: any) => {
+          if (error) {
+            console.error("Error retrieving user with JWT:", error);
+            res.status(500).send("Error retrieving user with JWT");
+            return;
+          }
+          const user = results[0];
+          const { password, identifier, identifierType, ...safeUser } = user;
+          res
+            .status(200)
+            .send({
+              fullName: `${user.firstName} ${user.lastName}`,
+              ...safeUser,
+            });
+        }
+      );
+    } catch (err) {
+      console.error("Error retrieving user with JWT:", err);
+      res.status(500).send("Error retrieving user with JWT");
+    }
+  }
+
+
   async changePassword(
     req: express.Request,
     res: express.Response,

@@ -4,6 +4,7 @@ import express from "express";
 import bodyValidationMiddleware from "../../common/middleware/body.validation.middleware";
 import usersController from "./controllers/users.controller";
 import jwtMiddleware from "../../auth/middelware/jwt.middleware";
+import authControllers from "../../auth/controller/auth.controllers";
 
 
 export class UserRoutes extends CommonRoutesConfig {
@@ -47,13 +48,16 @@ export class UserRoutes extends CommonRoutesConfig {
         createUser
       );
 
-   
-    this.app
-      .route(`/users/:id`)
-      .get(validJWTNeeded, usersController.getUserById)
-      .patch(validJWTNeeded, editUser)
-      .put(validJWTNeeded, usersController.putUser)
-      .delete(validJWTNeeded, usersController.deleteUser);
+      this.app
+        .route("/profile")
+        .get(validJWTNeeded, authControllers.getUserWithJWT);
+
+      this.app
+        .route(`/users/:id`)
+        .get(validJWTNeeded, usersController.getUserById)
+        .patch(validJWTNeeded, editUser)
+        .put(validJWTNeeded, usersController.putUser)
+        .delete(validJWTNeeded, usersController.deleteUser);
 
     return this.app;
   }
