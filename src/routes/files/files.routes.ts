@@ -122,6 +122,3 @@ export class FileRoutes extends CommonRoutesConfig {
     return this.app;
   }
 }
-
-// s07IjBi2UOHiCV4DPMtarlyoUybosVj/gkE5S6Nd
-// AKIAR6R4BFSR5SM55VUO

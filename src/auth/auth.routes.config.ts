@@ -23,10 +23,6 @@ export class AuthRoutes extends CommonRoutesConfig {
       verifyUserPassword,
       createJWT
     );
-
-    // get profile with jwt
-    this.app.get(`/profile`, [jwtMiddleware.validJWTNeeded, ]);
-
     return this.app;
   }
 }
