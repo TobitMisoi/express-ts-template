@@ -4,6 +4,8 @@ import { CommonRoutesConfig } from "./common/common.routes.config";
 import { UserRoutes } from "./routes/users/user.routes.config";
 import { AuthRoutes } from "./auth/auth.routes.config";
 import cors from "cors";
+import { BusinessRoutes } from "./routes/business/business.routes";
+import { FileRoutes } from "./routes/files/files.routes";
 
 const app = express();
 const port = 3000;
@@ -30,6 +32,8 @@ app.get("/", (req, res) => {
 
 routes.push(new UserRoutes(app));
 routes.push(new AuthRoutes(app));
+routes.push(new BusinessRoutes(app));
+routes.push(new FileRoutes(app));
 
 
 app.listen(port, () => {
